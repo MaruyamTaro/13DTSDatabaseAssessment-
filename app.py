@@ -35,7 +35,7 @@ def connect_database(db_file):
 
 @app.route('/')
 def render_homepage():
-    return render_template('../templates/home.html', logged_in = is_logged_in())
+    return render_template('home.html', logged_in = is_logged_in())
 
 
 @app.route('/Schedule')
@@ -47,7 +47,7 @@ def render_schedule():
     results = cur.fetchall()
     print(results)
     con.close()
-    return render_template('../templates/Schedule.html', Sessions=results)
+    return render_template('Schedule.html', Sessions=results)
 
 
 
@@ -91,7 +91,7 @@ def render_signup():
             return redirect("/signup?error=registration+failed")
 
     # If it's a GET request, render the signup form
-    return render_template("../templates/signup.html", logged_in = is_logged_in())
+    return render_template("signup.html", logged_in = is_logged_in())
 
 
 @app.route('/login', methods=['POST','GET'])
@@ -114,7 +114,7 @@ def render_login():
         session['last_name'] = results[1]
         print(session)
         return redirect("/")
-    return render_template('.../templates/login.html', logged_in = is_logged_in())
+    return render_template('login.html', logged_in = is_logged_in())
 
 @app.route('/logout', methods=['POST','GET'])
 def logout():
