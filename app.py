@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, session
 import sqlite3
 from sqlite3 import Error
 
-DATABASE = "C:/Users/21300/PycharmProjects/TutorWeb13dts/DB"
+DATABASE = "C:/Users/21300/PycharmProjects/flaskProject/DB"
 
 app = Flask(__name__)
 app.secret_key = "abcdef"
@@ -107,13 +107,16 @@ def render_login():
         query = "SELECT First_name, Last_name, Email, password FROM People WHERE email = ?"
         cur.execute(query,(email,))
         results = cur.fetchone()
-        if password != results[3]:
-            return redirect('/login/?message=Incorrctnameorpassword')
-        session['email'] = results[2]
-        session['first_name'] = results[0]
-        session['last_name'] = results[1]
-        print(session)
-        return redirect("/")
+        if results is not None:
+            if password != results[3]:
+                return render_template('login.html',error='incorrect details')
+            session['email'] = results[2]
+            session['first_name'] = results[0]
+            session['last_name'] = results[1]
+            print(session)
+            return redirect("/")
+        else:
+            return render_template('login.html',error='incorrect details')
     return render_template('login.html', logged_in = is_logged_in())
 
 @app.route('/logout', methods=['POST','GET'])

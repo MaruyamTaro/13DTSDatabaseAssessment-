@@ -3,6 +3,12 @@
 {% block pageheading %}Login{% endblock %}
 
 {% block main %}
+    {% if error == 'incorrect details'%}
+        <h3> YOU HAVE ENTERED THE WRONG PASSWORD OR EMAIL</h3>
+
+
+    {% endif %}
+
     <form class = "myform" method="post">
         <div class = "form-group">
             <div class = "form-label"> Email: </div>
@@ -18,6 +24,7 @@
             <div class = "form-label"> Submit </div>
             <div class = "form-element"> <input type = "submit" name = "submit"> </div>
         </div>
+        <p>Don't have an account? <a href="/signup">Sign up!</a> </p>
     </form>
-    <p>Don't have an account? <a href="/signup">Sign up!</a> </p>
+
 {% endblock %}
