@@ -18,6 +18,7 @@ def is_logged_in():
         print("Logged IN")
         return True
 
+
 def connect_database(db_file):
     """
     Creates a connection with the database
@@ -35,27 +36,23 @@ def connect_database(db_file):
 
 @app.route('/')
 def render_homepage():
-    return render_template('home.html', logged_in = is_logged_in())
+    return render_template('home.html', logged_in=is_logged_in())
 
 
-@app.route('/Schedule')
-def render_schedule():
+@app.route('/listings')
+def render_listings():
     con = connect_database(DATABASE)
-    query = "SELECT Teacher_f_name, Student_f_name FROM TimeTable"
+    query = "SELECT Listing_name, Listing_text FROM Listings"
     cur = con.cursor()
     cur.execute(query)
     results = cur.fetchall()
     print(results)
     con.close()
-    return render_template('Schedule.html', Sessions=results)
+    return render_template('listings.html', listings=results)
 
 
-
-
-
-@app.route('/signup', methods=['POST','GET'])
+@app.route('/signup', methods=['POST', 'GET'])
 def render_signup():
-
     if request.method == 'POST':
 
         try:
@@ -83,7 +80,6 @@ def render_signup():
             print(test_store)
             con.commit()
 
-
             return redirect("/login?message=signup+successful")
 
         except Exception as e:
@@ -91,10 +87,10 @@ def render_signup():
             return redirect("/signup?error=registration+failed")
 
     # If it's a GET request, render the signup form
-    return render_template("signup.html", logged_in = is_logged_in())
+    return render_template("signup.html", logged_in=is_logged_in())
 
 
-@app.route('/login', methods=['POST','GET'])
+@app.route('/login', methods=['POST', 'GET'])
 def render_login():
     if is_logged_in():
         return redirect('/')
@@ -105,26 +101,28 @@ def render_login():
         con = connect_database(DATABASE)
         cur = con.cursor()
         query = "SELECT First_name, Last_name, Email, password FROM People WHERE email = ?"
-        cur.execute(query,(email,))
+        cur.execute(query, (email,))
         results = cur.fetchone()
         if results is not None:
             if password != results[3]:
-                return render_template('login.html',error='incorrect details')
+                return render_template('login.html', error='incorrect details')
             session['email'] = results[2]
             session['first_name'] = results[0]
             session['last_name'] = results[1]
             print(session)
             return redirect("/")
         else:
-            return render_template('login.html',error='incorrect details')
-    return render_template('login.html', logged_in = is_logged_in())
+            return render_template('login.html', error='incorrect details')
+    return render_template('login.html', logged_in=is_logged_in())
 
-@app.route('/logout', methods=['POST','GET'])
+
+@app.route('/logout', methods=['POST', 'GET'])
 def logout():
     print(session)
     session.clear()
     print(session)
     return redirect('/')
+
 
 if __name__ == '__main__':
     app.run()

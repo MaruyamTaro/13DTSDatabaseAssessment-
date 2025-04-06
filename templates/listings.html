@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block pageheading %}
+    <p> All Listings</p>
+{% endblock %}
+
+{% block main %}
+<div class="products">
+        {% for product in listings %}
+            <div class="product-box">
+                <a href="listings/{{ product[id_number] }}"> <h3 class = product-box-heading> {{ product[0] }}</h3></a>
+                <p class="product-box-info"> {{ product[1] }}</p>
+
+            </div>
+        {%endfor%}
+   </div>
+{% endblock %}
