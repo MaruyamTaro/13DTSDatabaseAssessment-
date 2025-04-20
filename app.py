@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request, redirect, session
-import sqlite3
+import sqlite3, os
 from sqlite3 import Error
 
-DATABASE = "C:/Users/21300/PycharmProjects/flaskProject/DB"
+DATABASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "DB")
 
 app = Flask(__name__)
 app.secret_key = "abcdef"
