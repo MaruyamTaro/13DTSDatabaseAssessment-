@@ -9,9 +9,9 @@ app.secret_key = "abcdef"
 
 
 def is_logged_in():
-    if session.get('first_name') == None:
+    if session.get('first_name') is None:
         return False
-    if (session['first_name'] == None):
+    if session['first_name'] is None:
         print("Not Logged IN")
         return False
     else:
@@ -114,6 +114,12 @@ def render_login():
         else:
             return render_template('login.html', error='incorrect details')
     return render_template('login.html', logged_in=is_logged_in())
+
+@app.route('/listings/<int:listing_id>')
+def listing_details(listing_id):
+
+
+
 
 
 @app.route('/logout', methods=['POST', 'GET'])

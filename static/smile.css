@@ -202,3 +202,16 @@ table {
         width: 100%;
     }
 }
+
+ .listing-link{
+    text-decoration: none;
+    color: darkorange;
+    font-weight: normal;
+    transition: all 0.2s ease;
+ }
+
+ .listing-link:hover{
+     color: darkorange;
+     font-weight: bold;
+     text-decoration: underline;
+ }

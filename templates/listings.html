@@ -8,8 +8,10 @@
 <div class="products">
         {% for product in listings %}
             <div class="product-box">
-                <a href="listings/{{ product[Listing_id] }}"> <h3 class = product-box-heading> {{ product[0] }}</h3></a>
-                <img src="{{ url_for('static', filename='images/' + product[3]) }}" alt="{{ product[0] }}">
+                <h3 class="product-box-heading">
+                    <a href="/listings/{{ product[2] }}" class="listing-link">{{ product[0] }}</a>
+                </h3>
+                <img src="{{ url_for('static', filename='images/' + product[3]) }}">
                 <p class="product-box-info"> {{ product[1] }}</p>
             </div>
         {%endfor%}
