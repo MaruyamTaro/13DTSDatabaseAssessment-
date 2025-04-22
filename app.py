@@ -50,9 +50,13 @@ def render_listings():
     con.close()
     return render_template('listings.html', listings=results)
 
-
 @app.route('/signup', methods=['POST', 'GET'])
 def render_signup():
+    """
+    sign up gets the input from the user and puts it into the database people with the append
+    :return:
+    database with new user info
+    """
     if request.method == 'POST':
 
         try:
@@ -61,7 +65,6 @@ def render_signup():
             email = request.form.get('user_email')
             pass1 = request.form.get('user_password')
             pass2 = request.form.get('user_password2')
-            teachquestion = request.form.get('teachquestion')
             print("flag1")
             print(fname)
             if pass1 != pass2:
@@ -70,11 +73,11 @@ def render_signup():
                 return redirect("/signup?error=password+must+be+more+than+8+letters")
 
             con = connect_database(DATABASE)
-            query_insert = ("INSERT INTO People (First_name, Last_name, Email, password, Teacher) "
-                            "VALUES (?, ?, ?, ?, ?)")
+            query_insert = ("INSERT INTO People (First_name, Last_name, Email, password) "
+                            "VALUES (?, ?, ?, ?)")
             query_test = "SELECT * FROM People"
             cur = con.cursor()
-            cur.execute(query_insert, (fname, lname, email, pass1, teachquestion))
+            cur.execute(query_insert, (fname, lname, email, pass1))
             cur.execute(query_test)
             test_store = cur.fetchall()
             print(test_store)
@@ -115,8 +118,8 @@ def render_login():
             return render_template('login.html', error='incorrect details')
     return render_template('login.html', logged_in=is_logged_in())
 
-@app.route('/listings/<int:listing_id>')
-def listing_details(listing_id):
+#@app.route('/listings/<int:listing_id>')
+#def listing_details(listing_id):
 
 
 

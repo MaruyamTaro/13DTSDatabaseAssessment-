@@ -499,7 +499,7 @@
     </routine>
     <schema id="191" parent="1" name="main">
       <Current>1</Current>
-      <LastIntrospectionLocalTimestamp>2025-04-19.06:27:02</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2025-04-21.10:44:04</LastIntrospectionLocalTimestamp>
     </schema>
     <argument id="192" parent="16">
       <ArgumentDirection>R</ArgumentDirection>
@@ -1651,48 +1651,44 @@
       <DasType>varchar(60)|0s</DasType>
       <Position>3</Position>
     </column>
-    <column id="570" parent="556" name="Teacher">
-      <DasType>BOOL|0s</DasType>
+    <column id="570" parent="556" name="Email">
+      <DasType>varchar(30)|0s</DasType>
+      <NotNull>1</NotNull>
       <Position>4</Position>
     </column>
-    <column id="571" parent="556" name="Email">
+    <column id="571" parent="556" name="password">
       <DasType>varchar(30)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>5</Position>
     </column>
-    <column id="572" parent="556" name="password">
-      <DasType>varchar(30)|0s</DasType>
-      <NotNull>1</NotNull>
-      <Position>6</Position>
-    </column>
-    <key id="573" parent="556">
+    <key id="572" parent="556">
       <ColNames>Person_ID</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="574" parent="557" name="type">
+    <column id="573" parent="557" name="type">
       <DasType>TEXT|0s</DasType>
       <Position>1</Position>
     </column>
-    <column id="575" parent="557" name="name">
+    <column id="574" parent="557" name="name">
       <DasType>TEXT|0s</DasType>
       <Position>2</Position>
     </column>
-    <column id="576" parent="557" name="tbl_name">
+    <column id="575" parent="557" name="tbl_name">
       <DasType>TEXT|0s</DasType>
       <Position>3</Position>
     </column>
-    <column id="577" parent="557" name="rootpage">
+    <column id="576" parent="557" name="rootpage">
       <DasType>INT|0s</DasType>
       <Position>4</Position>
     </column>
-    <column id="578" parent="557" name="sql">
+    <column id="577" parent="557" name="sql">
       <DasType>TEXT|0s</DasType>
       <Position>5</Position>
     </column>
-    <column id="579" parent="558" name="name">
+    <column id="578" parent="558" name="name">
       <Position>1</Position>
     </column>
-    <column id="580" parent="558" name="seq">
+    <column id="579" parent="558" name="seq">
       <Position>2</Position>
     </column>
   </database-model>
