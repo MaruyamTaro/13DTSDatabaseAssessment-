@@ -23,7 +23,7 @@ body {
 }
 
 img {
-    max-width: 100%;
+    max-height: 100%;
 }
 
 h1 {
@@ -81,7 +81,7 @@ a, a:visited {
 }
 
 .product-box img {
-    max-height:300px;
+    max-height:200px;
 }
 
 .products {
@@ -91,7 +91,7 @@ a, a:visited {
 }
 
 .product-box {
-    /*width: 13vw;*/
+    max-height:600px;
     width: 32%;
     /*float: left;*/
     /*display: table-cell;*/
@@ -115,6 +115,12 @@ a, a:visited {
     padding: 0.5rem;
 
 }
+.product-box-price {
+    padding: 0.5rem;
+    font-weight: bold;
+    font-size: large;
+}
+
 
 .product-box h3 {
     font-size: 1.2rem;

@@ -42,7 +42,7 @@ def render_homepage():
 @app.route('/listings')
 def render_listings():
     con = connect_database(DATABASE)
-    query = "SELECT Listing_name, Listing_text, Listing_id, Image FROM Listings"
+    query = "SELECT Listing_name, Listing_text, Listing_id, Image, Listing_price FROM Listings"
     cur = con.cursor()
     cur.execute(query)
     results = cur.fetchall()
