@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block main %}
+        {% for product in listings %}
+            <listingheading>{{ product[0] }}</listingheading>
+            <p></p>
+            <img src="{{ url_for('static', filename='images/' + product[3]) }}">
+            <p></p>
+            <p> {{ product[1] }}</p>
+            <p> ${{ product[4] }}</p>
+        {%endfor%}
+{% endblock %}

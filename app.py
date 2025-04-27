@@ -39,6 +39,19 @@ def render_homepage():
     return render_template('home.html', logged_in=is_logged_in())
 
 
+@app.route('/listings/<int:listing_id>')
+def listing_details(listing_id):
+    con = connect_database(DATABASE)
+    query = "SELECT Listing_name, Listing_text, Listing_id, Image, Listing_price FROM Listings WHERE listing_id = ?"
+    cur = con.cursor()
+    cur.execute(query, (listing_id,))
+    results = cur.fetchall()
+    print(results)
+    con.close()
+    if results is None:
+        return "listing not found"
+    return render_template('Listingpage.html', listings=results)
+
 @app.route('/listings')
 def render_listings():
     con = connect_database(DATABASE)
@@ -117,11 +130,6 @@ def render_login():
         else:
             return render_template('login.html', error='incorrect details')
     return render_template('login.html', logged_in=is_logged_in())
-
-#@app.route('/listings/<int:listing_id>')
-#def listing_details(listing_id):
-
-
 
 
 
