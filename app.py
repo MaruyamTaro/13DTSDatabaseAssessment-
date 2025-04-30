@@ -9,10 +9,11 @@ app.secret_key = "abcdef"
 
 
 def is_logged_in():
+    """
+    params: none
+    :return: true if the user is logged in. False if the user has not logged in
+    """
     if session.get('first_name') is None:
-        return False
-    if session['first_name'] is None:
-        print("Not Logged IN")
         return False
     else:
         print("Logged IN")
@@ -22,10 +23,10 @@ def is_logged_in():
 def connect_database(db_file):
     """
     Creates a connection with the database
-    :param db_file:
+    :param db_file the database needed to be connected to be used:
     :return: conn
     """
-    try:
+    try:  #error detection
         connection = sqlite3.connect(db_file)
         return connection
     except Error as e:
@@ -36,11 +37,22 @@ def connect_database(db_file):
 
 @app.route('/')
 def render_homepage():
+    """
+    After the user logs in it adds the changes to the home.html to get rid of some of the headings.
+    :return: call to the render template function home.html and passes in the logged in status.
+    """
     return render_template('home.html', logged_in=is_logged_in())
 
 
 @app.route('/listings/<int:listing_id>')
 def listing_details(listing_id):
+    """
+    when the user clicks on a listing in the listings page, it sends the user to a page specifically to the product
+     where they can bid
+    :param listing_id:
+    :return: calls the render template function with the data from the database filtered with the lisiting ID. so it
+    displays only the specific product.
+    """
     con = connect_database(DATABASE)
     query = "SELECT Listing_name, Listing_text, Listing_id, Image, Listing_price FROM Listings WHERE listing_id = ?"
     cur = con.cursor()
@@ -52,8 +64,13 @@ def listing_details(listing_id):
         return "listing not found"
     return render_template('Listingpage.html', listings=results)
 
+
 @app.route('/listings')
 def render_listings():
+    """
+    displays a page with all the products
+    :return: calls the render template function with a page with all rows of data with specific information.
+    """
     con = connect_database(DATABASE)
     query = "SELECT Listing_name, Listing_text, Listing_id, Image, Listing_price FROM Listings"
     cur = con.cursor()
@@ -61,12 +78,13 @@ def render_listings():
     results = cur.fetchall()
     print(results)
     con.close()
-    return render_template('listings.html', listings=results)
+    return render_template('listings.html', listings=results, logged_in=is_logged_in())
+
 
 @app.route('/signup', methods=['POST', 'GET'])
 def render_signup():
     """
-    sign up gets the input from the user and puts it into the database people with the append
+    sign up gets the input from the user and puts it into the database people with the insert
     :return:
     database with new user info
     """
@@ -108,6 +126,11 @@ def render_signup():
 
 @app.route('/login', methods=['POST', 'GET'])
 def render_login():
+    """
+    Displays the html with the login area. The user inserts the data and checks if the data they inserted
+    is the same as the ones in the database. if not it displays a error.
+    :return:calls the render template function for the home.html if the details are correct. If not it renders the login with a error.
+    """
     if is_logged_in():
         return redirect('/')
     if request.method == 'POST':
@@ -132,9 +155,12 @@ def render_login():
     return render_template('login.html', logged_in=is_logged_in())
 
 
-
 @app.route('/logout', methods=['POST', 'GET'])
 def logout():
+    """
+
+    :return:
+    """
     print(session)
     session.clear()
     print(session)
