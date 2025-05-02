@@ -38,6 +38,16 @@ def connect_database(db_file):
 @app.route('/')
 def render_homepage():
     """
+    TEST for the time before the bid funtion EXIST. DELETE
+    :return:
+    """
+    con = connect_database(DATABASE)
+    query = "SELECT  DATE()"
+ #   query = "INSERT INTO Bidhistory(current_time) VALUES datetime('now', 'localtime')"
+    cur = con.cursor()
+    cur.execute(query)
+
+    """
     After the user logs in it adds the changes to the home.html to get rid of some of the headings.
     :return: call to the render template function home.html and passes in the logged in status.
     """
@@ -79,6 +89,31 @@ def render_listings():
     print(results)
     con.close()
     return render_template('listings.html', listings=results, logged_in=is_logged_in())
+
+@app.route('/profile')
+def render_profile():
+    """
+    displays the user's information and the history of the user's bids and the history of their listings.
+    :return:
+    """
+    con = connect_database(DATABASE)
+    query1 = "SELECT Listing_name, Listing_text, Listing_id, Image, Listing_price FROM Listings"
+    query2 = "SELECT "
+    query3 = ""
+    cur = con.cursor()
+    cur.execute(query1)
+    Userdetail = cur.fetchall()
+
+    cur.execute(query2)
+    bidhistorydetail = cur.fetchall()
+
+    cur.execute(query3)
+    ListingHistorydetail = cur.fetchall()
+
+
+    print(results)
+    con.close()
+    return render_template()
 
 
 @app.route('/signup', methods=['POST', 'GET'])
