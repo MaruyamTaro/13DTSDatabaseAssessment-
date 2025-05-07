@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect, session
 import sqlite3, os
 from sqlite3 import Error
 
+
+#this code is used to find the path of the file even if i switch computers.
 DATABASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "DB")
 
 app = Flask(__name__)
@@ -37,16 +39,15 @@ def connect_database(db_file):
 
 @app.route('/')
 def render_homepage():
+    #con = connect_database(DATABASE)
+    #query = ("INSERT INTO Bidhistory (time) VALUES (datetime('now', 'localtime'))")
+    #cur = con.cursor()
+    #cur.execute(query)
+
     """
     TEST for the time before the bid funtion EXIST. DELETE
     :return:
     """
-    con = connect_database(DATABASE)
-    query = "SELECT  DATE()"
- #   query = "INSERT INTO Bidhistory(current_time) VALUES datetime('now', 'localtime')"
-    cur = con.cursor()
-    cur.execute(query)
-
     """
     After the user logs in it adds the changes to the home.html to get rid of some of the headings.
     :return: call to the render template function home.html and passes in the logged in status.
@@ -54,7 +55,7 @@ def render_homepage():
     return render_template('home.html', logged_in=is_logged_in())
 
 
-@app.route('/listings/<int:listing_id>')
+@app.route('/listings/<int:listing_id>', methods=['POST', 'GET'])
 def listing_details(listing_id):
     """
     when the user clicks on a listing in the listings page, it sends the user to a page specifically to the product
@@ -69,9 +70,25 @@ def listing_details(listing_id):
     cur.execute(query, (listing_id,))
     results = cur.fetchall()
     print(results)
-    con.close()
     if results is None:
         return "listing not found"
+    if request.method == 'POST':
+        #fname = request.form.get('user_F_name')
+        Bid = request.form.get('UserBid')
+
+        query_insert = ("INSERT INTO Bidhistory (price) "
+                        "VALUES (?)")
+        query_test = "SELECT * FROM Bidhistory"
+        timequery = ("INSERT INTO Bidhistory (time) VALUES (datetime('now', 'localtime'))")
+
+        cur = con.cursor()
+        cur.execute(query_insert, (Bid,))
+        cur.execute(query_test)
+        cur.execute(timequery)
+        test_store = cur.fetchall()
+        print(test_store)
+        con.commit()
+        return redirect('/listings')
     return render_template('Listingpage.html', listings=results)
 
 
@@ -111,7 +128,6 @@ def render_profile():
     ListingHistorydetail = cur.fetchall()
 
 
-    print(results)
     con.close()
     return render_template()
 
