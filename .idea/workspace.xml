@@ -4,12 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="76d72983-6111-40b5-ab84-bf03f0f18e7d" name="Changes" comment="Made more tables for bidding system and profile page">
+    <list default="true" id="76d72983-6111-40b5-ab84-bf03f0f18e7d" name="Changes" comment="actually able to bid on the item with a slight bug">
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/b46caa58-1fa2-419f-a936-50c9a7175e80.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/b46caa58-1fa2-419f-a936-50c9a7175e80.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DB" beforeDir="false" afterPath="$PROJECT_DIR$/DB" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/Listingpage.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Listingpage.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -140,7 +139,8 @@
       <workItem from="1746051344529" duration="2862000" />
       <workItem from="1746142560892" duration="3438000" />
       <workItem from="1746392709766" duration="1826000" />
-      <workItem from="1746512512741" duration="7985000" />
+      <workItem from="1746512512741" duration="8258000" />
+      <workItem from="1746656110952" duration="3353000" />
     </task>
     <task id="LOCAL-00001" summary="Initial push with basic">
       <created>1743629696428</created>
@@ -258,7 +258,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746145982921</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="actually able to bid on the item with a slight bug">
+      <option name="closed" value="true" />
+      <created>1746584325615</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1746584325615</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -286,10 +294,11 @@
     <MESSAGE value="commit to save current work to clone to diffrent pc" />
     <MESSAGE value="Comments added to function. and the fix to the logged in error after going to listings page" />
     <MESSAGE value="Made more tables for bidding system and profile page" />
-    <option name="LAST_COMMIT_MESSAGE" value="Made more tables for bidding system and profile page" />
+    <MESSAGE value="actually able to bid on the item with a slight bug" />
+    <option name="LAST_COMMIT_MESSAGE" value="actually able to bid on the item with a slight bug" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/13DTSDatabaseAssessment_$flaskProject.coverage" NAME="flaskProject Coverage Results" MODIFIED="1746584090542" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/13DTSDatabaseAssessment_$flaskProject.coverage" NAME="flaskProject Coverage Results" MODIFIED="1746658968195" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/flaskProject$flaskProject.coverage" NAME="flaskProject Coverage Results" MODIFIED="1744163761332" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

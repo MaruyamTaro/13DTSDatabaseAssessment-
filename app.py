@@ -75,21 +75,20 @@ def listing_details(listing_id):
     if request.method == 'POST':
         #fname = request.form.get('user_F_name')
         Bid = request.form.get('UserBid')
-
-        query_insert = ("INSERT INTO Bidhistory (price) "
-                        "VALUES (?)")
+        if Bid <= 3:
+            return render_template('/listings/<int:listing_id>', listings=results, logged_in=is_logged_in())
+        query_insert = ("INSERT INTO Bidhistory (price, time ,Listing_id) VALUES (?, datetime('now', 'localtime'),?)"
+)
         query_test = "SELECT * FROM Bidhistory"
-        timequery = ("INSERT INTO Bidhistory (time) VALUES (datetime('now', 'localtime'))")
 
         cur = con.cursor()
-        cur.execute(query_insert, (Bid,))
+        cur.execute(query_insert, (Bid,listing_id,))
         cur.execute(query_test)
-        cur.execute(timequery)
         test_store = cur.fetchall()
         print(test_store)
         con.commit()
         return redirect('/listings')
-    return render_template('Listingpage.html', listings=results)
+    return render_template('Listingpage.html', listings=results, logged_in=is_logged_in())
 
 
 @app.route('/listings')
@@ -129,7 +128,7 @@ def render_profile():
 
 
     con.close()
-    return render_template()
+    return render_template("profile.html", logged_in=is_logged_in())
 
 
 @app.route('/signup', methods=['POST', 'GET'])
