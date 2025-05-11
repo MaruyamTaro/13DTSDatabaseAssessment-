@@ -65,10 +65,14 @@ def listing_details(listing_id):
     displays only the specific product.
     """
     con = connect_database(DATABASE)
-    query = "SELECT Listing_name, Listing_text, Listing_id, Image, Listing_price FROM Listings WHERE listing_id = ?"
+    query = "SELECT Listing_name, Listing_text, Listing_id, Image, Listing_price_res FROM Listings WHERE listing_id = ?"
     cur = con.cursor()
     cur.execute(query, (listing_id,))
     results = cur.fetchall()
+    query2 = "SELECT price, time FROM Bidhistory WHERE listing_id = ?"
+    cur = con.cursor()
+    cur.execute(query2, (listing_id,))
+    results2 = cur.fetchall()
     print(results)
     if results is None:
         return "listing not found"
@@ -87,8 +91,11 @@ def listing_details(listing_id):
         test_store = cur.fetchall()
         print(test_store)
         con.commit()
+
+
+
         return redirect('/listings')
-    return render_template('Listingpage.html', listings=results, logged_in=is_logged_in())
+    return render_template('Listingpage.html', listings=results, Info=results2, logged_in=is_logged_in())
 
 
 @app.route('/listings')
@@ -98,7 +105,7 @@ def render_listings():
     :return: calls the render template function with a page with all rows of data with specific information.
     """
     con = connect_database(DATABASE)
-    query = "SELECT Listing_name, Listing_text, Listing_id, Image, Listing_price FROM Listings"
+    query = "SELECT Listing_name, Listing_text, Listing_id, Image FROM Listings"
     cur = con.cursor()
     cur.execute(query)
     results = cur.fetchall()
@@ -106,30 +113,30 @@ def render_listings():
     con.close()
     return render_template('listings.html', listings=results, logged_in=is_logged_in())
 
-@app.route('/profile')
-def render_profile():
-    """
-    displays the user's information and the history of the user's bids and the history of their listings.
-    :return:
-    """
-    con = connect_database(DATABASE)
-    query1 = "SELECT Listing_name, Listing_text, Listing_id, Image, Listing_price FROM Listings"
-    query2 = "SELECT "
-    query3 = ""
-    cur = con.cursor()
-    cur.execute(query1)
-    Userdetail = cur.fetchall()
-
-    cur.execute(query2)
-    bidhistorydetail = cur.fetchall()
-
-    cur.execute(query3)
-    ListingHistorydetail = cur.fetchall()
-
-
-    con.close()
-    return render_template("profile.html", logged_in=is_logged_in())
-
+# @app.route('/profile')
+# def render_profile():
+#     """
+#     displays the user's information and the history of the user's bids and the history of their listings.
+#     :return:
+#     """
+#     con = connect_database(DATABASE)
+#     query1 = "SELECT Listing_name, Listing_text, Listing_id, Image, Listing_price FROM Listings"
+#     query2 = "SELECT "
+#     query3 = ""
+#     cur = con.cursor()
+#     cur.execute(query1)
+#     Userdetail = cur.fetchall()
+#
+#     cur.execute(query2)
+#     bidhistorydetail = cur.fetchall()
+#
+#     cur.execute(query3)
+#     ListingHistorydetail = cur.fetchall()
+#
+#
+#     con.close()
+#     return render_template("profile.html", logged_in=is_logged_in())
+#
 
 @app.route('/signup', methods=['POST', 'GET'])
 def render_signup():

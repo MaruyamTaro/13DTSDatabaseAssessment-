@@ -20,4 +20,27 @@
             <div class = "form-element"> <input type = "submit" name = "Bid!"> </div>
         </div>
     </form>
+    <body>
+        <div>
+        <h2>History</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Bid Amount</th>
+                <th>Time</th>
+                <th>User_ID</th>
+            </tr>
+
+            </thead>
+            <tbody>
+            {% for Info in History %}
+            <tr>
+                <td>{{ Info[0] }}</td>
+                <td>{{ Info[1] }}</td>
+                <td>{{ Info[2] }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}
