@@ -499,7 +499,7 @@
     <routine id="190" parent="1" name="fts5"/>
     <schema id="191" parent="1" name="main">
       <Current>1</Current>
-      <LastIntrospectionLocalTimestamp>2025-05-11.11:42:52</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2025-05-11.21:21:36</LastIntrospectionLocalTimestamp>
     </schema>
     <argument id="192" parent="16">
       <ArgumentDirection>R</ArgumentDirection>
@@ -1611,123 +1611,119 @@
       <DasType>integer|0s</DasType>
       <Position>3</Position>
     </column>
-    <column id="563" parent="555" name="Listing_id">
+    <column id="563" parent="555" name="fk_Listing_id">
       <DasType>integer|0s</DasType>
       <Position>4</Position>
     </column>
-    <column id="564" parent="555" name="user_id">
+    <column id="564" parent="555" name="fk_user_id">
       <DasType>integer|0s</DasType>
       <Position>5</Position>
     </column>
     <foreign-key id="565" parent="555" name="Listing_id">
-      <ColNames>Listing_id</ColNames>
+      <ColNames>fk_Listing_id</ColNames>
       <RefColNames>Listing_id</RefColNames>
       <RefTableName>Listings</RefTableName>
     </foreign-key>
-    <key id="566" parent="555" name="Bidhistory_pk">
+    <foreign-key id="566" parent="555" name="user_id___fk">
+      <ColNames>fk_user_id</ColNames>
+      <RefColNames>Person_ID</RefColNames>
+      <RefTableName>People</RefTableName>
+    </foreign-key>
+    <key id="567" parent="555" name="Bidhistory_pk">
       <ColNames>bid_id</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="567" parent="556" name="Listing_id">
+    <column id="568" parent="556" name="Listing_id">
       <AutoIncrement>1</AutoIncrement>
       <DasType>integer|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="568" parent="556" name="Listing_name">
+    <column id="569" parent="556" name="Listing_name">
       <DasType>varchar(30)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="569" parent="556" name="Listing_text">
+    <column id="570" parent="556" name="Listing_text">
       <DasType>varchar(100)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <column id="570" parent="556" name="Listing_price_res">
+    <column id="571" parent="556" name="Listing_price_res">
       <DasType>float|0s</DasType>
       <NotNull>1</NotNull>
       <Position>4</Position>
     </column>
-    <column id="571" parent="556" name="Image">
+    <column id="572" parent="556" name="Image">
       <DasType>varchar(50)|0s</DasType>
       <Position>5</Position>
     </column>
-    <column id="572" parent="556" name="Bids">
-      <DasType>integer|0s</DasType>
-      <Position>6</Position>
-    </column>
-    <foreign-key id="573" parent="556" name="Bids">
-      <ColNames>Bids</ColNames>
-      <RefColNames>price</RefColNames>
-      <RefTableName>Bidhistory</RefTableName>
-    </foreign-key>
-    <index id="574" parent="556" name="sqlite_autoindex_Listings_1">
+    <index id="573" parent="556" name="sqlite_autoindex_Listings_1">
       <ColNames>Listing_id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <Unique>1</Unique>
     </index>
-    <key id="575" parent="556">
+    <key id="574" parent="556">
       <ColNames>Listing_id</ColNames>
       <Primary>1</Primary>
       <UnderlyingIndexName>sqlite_autoindex_Listings_1</UnderlyingIndexName>
     </key>
-    <key id="576" parent="556">
+    <key id="575" parent="556">
       <ColNames>Listing_id</ColNames>
       <UnderlyingIndexName>sqlite_autoindex_Listings_1</UnderlyingIndexName>
     </key>
-    <column id="577" parent="557" name="Person_ID">
+    <column id="576" parent="557" name="Person_ID">
       <AutoIncrement>1</AutoIncrement>
       <DasType>integer|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="578" parent="557" name="First_name">
+    <column id="577" parent="557" name="First_name">
       <DasType>varchar(30)|0s</DasType>
       <Position>2</Position>
     </column>
-    <column id="579" parent="557" name="Last_name">
+    <column id="578" parent="557" name="Last_name">
       <DasType>varchar(60)|0s</DasType>
       <Position>3</Position>
     </column>
-    <column id="580" parent="557" name="Email">
+    <column id="579" parent="557" name="Email">
       <DasType>varchar(30)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>4</Position>
     </column>
-    <column id="581" parent="557" name="password">
+    <column id="580" parent="557" name="password">
       <DasType>varchar(30)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>5</Position>
     </column>
-    <key id="582" parent="557">
+    <key id="581" parent="557">
       <ColNames>Person_ID</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="583" parent="558" name="type">
+    <column id="582" parent="558" name="type">
       <DasType>TEXT|0s</DasType>
       <Position>1</Position>
     </column>
-    <column id="584" parent="558" name="name">
+    <column id="583" parent="558" name="name">
       <DasType>TEXT|0s</DasType>
       <Position>2</Position>
     </column>
-    <column id="585" parent="558" name="tbl_name">
+    <column id="584" parent="558" name="tbl_name">
       <DasType>TEXT|0s</DasType>
       <Position>3</Position>
     </column>
-    <column id="586" parent="558" name="rootpage">
+    <column id="585" parent="558" name="rootpage">
       <DasType>INT|0s</DasType>
       <Position>4</Position>
     </column>
-    <column id="587" parent="558" name="sql">
+    <column id="586" parent="558" name="sql">
       <DasType>TEXT|0s</DasType>
       <Position>5</Position>
     </column>
-    <column id="588" parent="559" name="name">
+    <column id="587" parent="559" name="name">
       <Position>1</Position>
     </column>
-    <column id="589" parent="559" name="seq">
+    <column id="588" parent="559" name="seq">
       <Position>2</Position>
     </column>
   </database-model>

@@ -196,10 +196,6 @@ a, a:visited {
     width: 100%;
 }
 
-table {
-    border-collapse: collapse;
-}
-
 .cart-table > thead {
     font-weight: bold;
 }

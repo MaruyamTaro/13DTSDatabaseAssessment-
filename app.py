@@ -39,6 +39,7 @@ def connect_database(db_file):
 
 @app.route('/')
 def render_homepage():
+
     #con = connect_database(DATABASE)
     #query = ("INSERT INTO Bidhistory (time) VALUES (datetime('now', 'localtime'))")
     #cur = con.cursor()
@@ -69,20 +70,24 @@ def listing_details(listing_id):
     cur = con.cursor()
     cur.execute(query, (listing_id,))
     results = cur.fetchall()
-    query2 = "SELECT price, time FROM Bidhistory WHERE listing_id = ?"
+    query2 = "SELECT price, time FROM Bidhistory WHERE fk_listing_id = ?"
     cur = con.cursor()
     cur.execute(query2, (listing_id,))
     results2 = cur.fetchall()
+    print(results2)
     print(results)
     if results is None:
         return "listing not found"
     if request.method == 'POST':
         #fname = request.form.get('user_F_name')
-        Bid = request.form.get('UserBid')
+        Bid:int = int(request.form.get('UserBid'))
         if Bid <= 3:
-            return render_template('/listings/<int:listing_id>', listings=results, logged_in=is_logged_in())
-        query_insert = ("INSERT INTO Bidhistory (price, time ,Listing_id) VALUES (?, datetime('now', 'localtime'),?)"
-)
+            #adds the listing id so i can reload the same product page when the user fails to add a bid higher than the current bid
+            listing = listing_id
+
+            return render_template('listingpage.html', lisiting = listing, listings=results, History=results2, logged_in=is_logged_in())
+        query_insert = ("INSERT INTO Bidhistory (price, time ,fk_Listing_id) VALUES (?, datetime('now', 'localtime'),?)")
+
         query_test = "SELECT * FROM Bidhistory"
 
         cur = con.cursor()
@@ -196,7 +201,7 @@ def render_login():
 
         con = connect_database(DATABASE)
         cur = con.cursor()
-        query = "SELECT First_name, Last_name, Email, password FROM People WHERE email = ?"
+        query = "SELECT First_name, Last_name, Email, password, Person_ID FROM People WHERE email = ?"
         cur.execute(query, (email,))
         results = cur.fetchone()
         if results is not None:
@@ -205,6 +210,8 @@ def render_login():
             session['email'] = results[2]
             session['first_name'] = results[0]
             session['last_name'] = results[1]
+            session['user_id'] = results[4]
+
             print(session)
             return redirect("/")
         else:
