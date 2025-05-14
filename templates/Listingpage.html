@@ -28,11 +28,11 @@
                 <th>User_ID</th>
             </tr>
 
-            {% for Info in History %}
+            {% for bid_info in Info %}
             <tr>
-                <td>{{ Info[0] }}</td>
-                <td>{{ Info[1] }}</td>
-                <td>{{ Info[2] }}</td>
+                <td>{{ bid_info[0] }}</td>
+                <td>{{ bid_info[1] }}</td>
+                <td>{{ bid_info[2] }}</td>
             </tr>
             {% endfor %}
         </table>

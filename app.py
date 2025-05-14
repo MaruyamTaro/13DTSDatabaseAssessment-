@@ -70,7 +70,7 @@ def listing_details(listing_id):
     cur = con.cursor()
     cur.execute(query, (listing_id,))
     results = cur.fetchall()
-    query2 = "SELECT price, time FROM Bidhistory WHERE fk_listing_id = ?"
+    query2 = "SELECT price, time, fk_user_id FROM Bidhistory WHERE fk_listing_id = ? ORDER BY time DESC"
     cur = con.cursor()
     cur.execute(query2, (listing_id,))
     results2 = cur.fetchall()
@@ -86,12 +86,13 @@ def listing_details(listing_id):
             listing = listing_id
 
             return render_template('listingpage.html', lisiting = listing, listings=results, History=results2, logged_in=is_logged_in())
-        query_insert = ("INSERT INTO Bidhistory (price, time ,fk_Listing_id) VALUES (?, datetime('now', 'localtime'),?)")
+        user_id = session['user_id']
+        query_insert = ("INSERT INTO Bidhistory (price, time ,fk_Listing_id,fk_user_id) VALUES (?, datetime('now', 'localtime'),?,?)")
 
         query_test = "SELECT * FROM Bidhistory"
 
         cur = con.cursor()
-        cur.execute(query_insert, (Bid,listing_id,))
+        cur.execute(query_insert, (Bid,listing_id,user_id,))
         cur.execute(query_test)
         test_store = cur.fetchall()
         print(test_store)
@@ -99,7 +100,7 @@ def listing_details(listing_id):
 
 
 
-        return redirect('/listings')
+        return redirect('/listings/<int:listing_id>')
     return render_template('Listingpage.html', listings=results, Info=results2, logged_in=is_logged_in())
 
 
