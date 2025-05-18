@@ -4,11 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="76d72983-6111-40b5-ab84-bf03f0f18e7d" name="Changes" comment="kept woring on bid history">
+    <list default="true" id="76d72983-6111-40b5-ab84-bf03f0f18e7d" name="Changes" comment="got the bid history table to work">
+      <change afterPath="$PROJECT_DIR$/templates/MakeListing.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/b46caa58-1fa2-419f-a936-50c9a7175e80.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/b46caa58-1fa2-419f-a936-50c9a7175e80.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DB" beforeDir="false" afterPath="$PROJECT_DIR$/DB" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/smile.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/smile.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/Listingpage.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/Listingpage.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,23 +67,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Flask server.flaskProject.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/KILLERTACO/PycharmProjects/13DTSDatabaseAssessment-/templates&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Flask server.flaskProject.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "C:/Users/KILLERTACO/Documents/commits",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\KILLERTACO\PycharmProjects\13DTSDatabaseAssessment-\templates" />
@@ -148,7 +152,10 @@
       <workItem from="1746997528973" duration="2029000" />
       <workItem from="1747008662941" duration="608000" />
       <workItem from="1747183481975" duration="5175000" />
-      <workItem from="1747261128678" duration="1348000" />
+      <workItem from="1747261128678" duration="1913000" />
+      <workItem from="1747352025084" duration="2754000" />
+      <workItem from="1747459442516" duration="12477000" />
+      <workItem from="1747528607024" duration="12034000" />
     </task>
     <task id="LOCAL-00001" summary="Initial push with basic">
       <created>1743629696428</created>
@@ -306,7 +313,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747220463528</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="got the bid history table to work">
+      <option name="closed" value="true" />
+      <created>1747262766903</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1747262766903</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -338,10 +353,11 @@
     <MESSAGE value="the bid history works" />
     <MESSAGE value="Had to rethink how im going to do things got to complicated." />
     <MESSAGE value="kept woring on bid history" />
-    <option name="LAST_COMMIT_MESSAGE" value="kept woring on bid history" />
+    <MESSAGE value="got the bid history table to work" />
+    <option name="LAST_COMMIT_MESSAGE" value="got the bid history table to work" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/13DTSDatabaseAssessment_$flaskProject.coverage" NAME="flaskProject Coverage Results" MODIFIED="1747262103482" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/13DTSDatabaseAssessment_$flaskProject.coverage" NAME="flaskProject Coverage Results" MODIFIED="1747556312027" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/flaskProject$flaskProject.coverage" NAME="flaskProject Coverage Results" MODIFIED="1744163761332" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

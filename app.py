@@ -54,10 +54,45 @@ def render_homepage():
     :return: call to the render template function home.html and passes in the logged in status.
     """
     return render_template('home.html', logged_in=is_logged_in())
+@app.route('/MakeListing', methods=['POST', 'GET'])
+def render_Makelisting():
+    """
+    sign up gets the input from the user and puts it into the database people with the insert
+    :return:
+    database with new user info
+    """
+    if request.method == 'POST':
+
+        try:
+            ListingName = request.form.get('Listing_name')
+            ListingInfo = request.form.get('Listing_info')
+            listingPriceRes = request.form.get('List_price_res')
+
+            con = connect_database(DATABASE)
+            query_insert = ("INSERT INTO People (First_name, Last_name, Email, password) "
+                            "VALUES (?, ?, ?, ?,")
+            query_test = "SELECT * FROM People"
+            cur = con.cursor()
+            cur.execute(query_insert, (fname, lname, email))
+            cur.execute(query_test)
+            test_store = cur.fetchall()
+            print(test_store)
+            con.commit()
+
+            return redirect("/listing")
+
+        except Exception as e:
+            print(f"Signup error: {str(e)}")
+            return redirect("/MakeListing?error=Makelisting+failed")
+
+    # If it's a GET request, render the signup form
+    return render_template("MakeListing.html", logged_in=is_logged_in())
 
 
 @app.route('/listings/<int:listing_id>', methods=['POST', 'GET'])
 def listing_details(listing_id):
+    listing = listing_id
+
     """
     when the user clicks on a listing in the listings page, it sends the user to a page specifically to the product
      where they can bid
@@ -66,26 +101,56 @@ def listing_details(listing_id):
     displays only the specific product.
     """
     con = connect_database(DATABASE)
+    cur = con.cursor()
+
+    # Get the maximum bid price for this listing
+    cur.execute("SELECT MAX(price) FROM bidhistory WHERE fk_Listing_id = ?", (listing_id,))
+    max_result = cur.fetchone()[0]
+
+    # If there are no bids yet max_result will be None
+    if max_result is None:
+        maxbid = 0
+    else:
+        maxbid = int(max_result)
+
+
+    # if Max is None:
+    #     maxbid = 0
+    # else:
+    #     maxbid = int(cur.fetchone()[0])
+
+    #get the result as an integer
+
+    #maxbid = int(cur.fetchone()[0])
+
+    #TEST
+
     query = "SELECT Listing_name, Listing_text, Listing_id, Image, Listing_price_res FROM Listings WHERE listing_id = ?"
     cur = con.cursor()
     cur.execute(query, (listing_id,))
     results = cur.fetchall()
+
     query2 = "SELECT price, time, fk_user_id FROM Bidhistory WHERE fk_listing_id = ? ORDER BY time DESC"
     cur = con.cursor()
     cur.execute(query2, (listing_id,))
     results2 = cur.fetchall()
+
     print(results2)
     print(results)
     if results is None:
         return "listing not found"
     if request.method == 'POST':
         #fname = request.form.get('user_F_name')
-        Bid:int = int(request.form.get('UserBid'))
-        if Bid <= 3:
+        userbid = request.form.get('UserBid')
+        if userbid is None or userbid.strip() == '':
+            return render_template('listingpage.html', lisiting=results, listings=results, Info=results2,logged_in=is_logged_in())
+        else:
+            Bid:int = int(userbid)
+        if Bid <= maxbid:
             #adds the listing id so i can reload the same product page when the user fails to add a bid higher than the current bid
             listing = listing_id
 
-            return render_template('listingpage.html', lisiting = listing, listings=results, History=results2, logged_in=is_logged_in())
+            return render_template('listingpage.html', lisiting = results, listings=results, Info=results2, logged_in=is_logged_in())
         user_id = session['user_id']
         query_insert = ("INSERT INTO Bidhistory (price, time ,fk_Listing_id,fk_user_id) VALUES (?, datetime('now', 'localtime'),?,?)")
 
@@ -100,8 +165,8 @@ def listing_details(listing_id):
 
 
 
-        return redirect('/listings/<int:listing_id>')
-    return render_template('Listingpage.html', listings=results, Info=results2, logged_in=is_logged_in())
+        return render_template('listingpage.html', lisiting = results, listings=results, Info=results2, logged_in=is_logged_in())
+    return render_template('listingpage.html', listings=results, Info=results2, logged_in=is_logged_in())
 
 
 @app.route('/listings')

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block pageheading %}Make A listing{% endblock %}
+
+{% block main %}
+    <!---#post to add info to the dB. need enctype for file upload--->
+    <form class = "myform" method="post" enctype="multipart/form-data">
+        <div class = "form-group">
+            <div class = "form-label">Listing Name: </div>
+            <div class = "form-element"> <input type = "text" name = "Listing_name"> required </div>
+        </div>
+
+        <div class = "form-group">
+            <div class = "form-label">Listing Description: </div>
+            <div class = "form-element"> <input type = "text" name = "Listing_info"> required </div>
+        </div>
+
+        <div class = "form-group">
+            <div class = "form-label">Listing_price_res: </div>
+            <div class = "form-element"> <input type = "number" name = "List_price_res"> required </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-label">Listing Image: </div>
+            <div class="form-element"> <input type="file" name="listing_image" accept="image/*"> </div>
+        </div>
+
+        <div class = "form-group">
+            <div class = "form-label">Add Listing!</div>
+            <div class = "form-element"> <input type = "submit" name = "Submit"> </div>
+        </div>
+
+    </form>
+
+{% endblock %}
