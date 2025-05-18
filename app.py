@@ -9,6 +9,9 @@ DATABASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "DB")
 app = Flask(__name__)
 app.secret_key = "abcdef"
 
+#used to save which folder the images save to
+UPLOAD_FOLDER = 'static/images'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def is_logged_in():
     """
@@ -45,48 +48,43 @@ def render_homepage():
     #cur = con.cursor()
     #cur.execute(query)
 
-    """
-    TEST for the time before the bid funtion EXIST. DELETE
-    :return:
-    """
+
     """
     After the user logs in it adds the changes to the home.html to get rid of some of the headings.
     :return: call to the render template function home.html and passes in the logged in status.
     """
     return render_template('home.html', logged_in=is_logged_in())
+
+
 @app.route('/MakeListing', methods=['POST', 'GET'])
 def render_Makelisting():
-    """
-    sign up gets the input from the user and puts it into the database people with the insert
-    :return:
-    database with new user info
-    """
     if request.method == 'POST':
+        if 'listing_image' in request.files:
 
-        try:
-            ListingName = request.form.get('Listing_name')
-            ListingInfo = request.form.get('Listing_info')
-            listingPriceRes = request.form.get('List_price_res')
+            file = request.files['listing_image']
 
+            filename = file.filename
+
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+            # Save the file to the static/images folder
+            file.save(filepath)
+            listing_name = request.form.get('Listing_name')
+            listing_info = request.form.get('Listing_info')
+            list_price_res = request.form.get('List_price_res')
+            Image = request.form.get('listing_image')
             con = connect_database(DATABASE)
-            query_insert = ("INSERT INTO People (First_name, Last_name, Email, password) "
-                            "VALUES (?, ?, ?, ?,")
-            query_test = "SELECT * FROM People"
+            query_insert = ("INSERT INTO Listings (Listing_name, Listing_text, Listing_price_res, Image) "
+                            "VALUES (?, ?, ?, ?)")
             cur = con.cursor()
-            cur.execute(query_insert, (fname, lname, email))
-            cur.execute(query_test)
+            cur.execute(query_insert, (listing_name, listing_info, list_price_res, filename))
             test_store = cur.fetchall()
             print(test_store)
             con.commit()
 
-            return redirect("/listing")
+            return render_template('listings.html', logged_in=is_logged_in())
 
-        except Exception as e:
-            print(f"Signup error: {str(e)}")
-            return redirect("/MakeListing?error=Makelisting+failed")
-
-    # If it's a GET request, render the signup form
-    return render_template("MakeListing.html", logged_in=is_logged_in())
+    return render_template('makelisting.html',logged_in=is_logged_in())
 
 
 @app.route('/listings/<int:listing_id>', methods=['POST', 'GET'])
@@ -107,7 +105,7 @@ def listing_details(listing_id):
     cur.execute("SELECT MAX(price) FROM bidhistory WHERE fk_Listing_id = ?", (listing_id,))
     max_result = cur.fetchone()[0]
 
-    # If there are no bids yet max_result will be None
+    # If there are no bids yet max_result will be nonetype. error keeps happening if this is not here when there are no inital bids
     if max_result is None:
         maxbid = 0
     else:
@@ -123,7 +121,6 @@ def listing_details(listing_id):
 
     #maxbid = int(cur.fetchone()[0])
 
-    #TEST
 
     query = "SELECT Listing_name, Listing_text, Listing_id, Image, Listing_price_res FROM Listings WHERE listing_id = ?"
     cur = con.cursor()
@@ -184,30 +181,28 @@ def render_listings():
     con.close()
     return render_template('listings.html', listings=results, logged_in=is_logged_in())
 
-# @app.route('/profile')
-# def render_profile():
-#     """
-#     displays the user's information and the history of the user's bids and the history of their listings.
-#     :return:
-#     """
-#     con = connect_database(DATABASE)
-#     query1 = "SELECT Listing_name, Listing_text, Listing_id, Image, Listing_price FROM Listings"
-#     query2 = "SELECT "
-#     query3 = ""
-#     cur = con.cursor()
-#     cur.execute(query1)
-#     Userdetail = cur.fetchall()
-#
-#     cur.execute(query2)
-#     bidhistorydetail = cur.fetchall()
-#
-#     cur.execute(query3)
-#     ListingHistorydetail = cur.fetchall()
-#
-#
-#     con.close()
-#     return render_template("profile.html", logged_in=is_logged_in())
-#
+@app.route('/profile')
+def render_profile():
+    """
+    displays the user's information and the history of the user's bids and the history of their listings.
+    :return:renders the profile html while passing in all the information that goes into the tables
+    """
+    con = connect_database(DATABASE)
+    query2 = "SELECT First_name, Last_name FROM people WHERE "
+    cur = con.cursor()
+    cur.execute(query1)
+    Userdetail = cur.fetchall()
+
+    cur.execute(query2)
+    bidhistorydetail = cur.fetchall()
+
+    cur.execute(query3)
+    ListingHistorydetail = cur.fetchall()
+
+
+    con.close()
+    return render_template("profile.html", logged_in=is_logged_in())
+
 
 @app.route('/signup', methods=['POST', 'GET'])
 def render_signup():
@@ -288,8 +283,8 @@ def render_login():
 @app.route('/logout', methods=['POST', 'GET'])
 def logout():
     """
-
-    :return:
+    logs out the user
+    :return:clears the session of the info of the user.
     """
     print(session)
     session.clear()

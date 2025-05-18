@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block main %}
+      {% block pageheading %}Profile{% endblock %}
+
+        <h2>You Bid On</h2>
+        <table>
+            <tr>
+                <th>Bid Amount</th>
+                <th>Time</th>
+                <th>Listing Name</th>
+            </tr>
+
+            {% for UserBIDS in Userbidinfo %}
+            <tr>
+                <td>{{ UserBIDS[0] }}</td>
+                <td>{{ UserBIDS[1] }}</td>
+                <td>{{ UserBIDS[2] }}</td>
+            </tr>
+        </table>
+{% endblock %}

@@ -4,7 +4,7 @@
         {% for product in listings %}
             <listingheading>{{ product[0] }}</listingheading>
             <p></p>
-            <img src="{{ url_for('static', filename='images/' + product[3]) }}">
+            <img src="{{ url_for('static', filename='images/' + product[3]) }}" width="500px" height ="300" >
             <p></p>
             <p> {{ product[1] }}</p>
 
