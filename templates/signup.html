@@ -3,6 +3,9 @@
 {% block pageheading %}Sign Up{% endblock %}
 
 {% block main %}
+    {% if error == 'alreadyexist'%}
+        <h3> YOU HAVE ENTERED THE WRONG PASSWORD OR EMAIL</h3>
+    {% endif %}
     <form class = "myform" method="post">
         <div class = "form-group">
             <div class = "form-label"> Email: </div>

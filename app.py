@@ -1,12 +1,13 @@
 from flask import Flask, render_template, request, redirect, session
 import sqlite3, os
 from sqlite3 import Error
-
+from flask_bcrypt import Bcrypt
 
 #this code is used to find the path of the file even if i switch computers.
 DATABASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "DB")
 
 app = Flask(__name__)
+bcrypt = Bcrypt(app)
 app.secret_key = "abcdef"
 
 #used to save which folder the images save to
@@ -59,6 +60,19 @@ def render_homepage():
 @app.route('/MakeListing', methods=['POST', 'GET'])
 def render_Makelisting():
     if request.method == 'POST':
+        listing_name = request.form.get('Listing_name')
+        listing_info = request.form.get('Listing_info')
+        list_price_res = int(request.form.get('List_price_res'))
+        Image = request.form.get('listing_image')
+        # checks if any of the values of these variables are empty but if they are not they return template to display error.
+        if not all([listing_name, listing_info, list_price_res]):
+            print("EMPTYBOXES")
+            return render_template('makelisting.html', error="emptyBox", logged_in=is_logged_in())
+        #checks if the reserve price is lower than 0. stops the code from causing a error later on when bidding
+        if list_price_res <=0:
+            print("initial lower than 0")
+            return render_template('makelisting.html', error="lower0", logged_in=is_logged_in())
+
         if 'listing_image' in request.files:
 
             file = request.files['listing_image']
@@ -69,15 +83,15 @@ def render_Makelisting():
 
             # Save the file to the static/images folder
             file.save(filepath)
-            listing_name = request.form.get('Listing_name')
-            listing_info = request.form.get('Listing_info')
-            list_price_res = request.form.get('List_price_res')
-            Image = request.form.get('listing_image')
+
+
+
             con = connect_database(DATABASE)
-            query_insert = ("INSERT INTO Listings (Listing_name, Listing_text, Listing_price_res, Image) "
-                            "VALUES (?, ?, ?, ?)")
+            query_insert = ("INSERT INTO Listings (Listing_name, Listing_text, Listing_price_res, Image,MadeBy_User_id,Sold)"
+                            "VALUES (?, ?, ?, ?, ?,?)")
             cur = con.cursor()
-            cur.execute(query_insert, (listing_name, listing_info, list_price_res, filename))
+            Made_By_User_id = session['user_id']
+            cur.execute(query_insert, (listing_name, listing_info, list_price_res, filename, Made_By_User_id, 0))
             test_store = cur.fetchall()
             print(test_store)
             con.commit()
@@ -89,6 +103,7 @@ def render_Makelisting():
 
 @app.route('/listings/<int:listing_id>', methods=['POST', 'GET'])
 def listing_details(listing_id):
+
     listing = listing_id
 
     """
@@ -112,22 +127,12 @@ def listing_details(listing_id):
         maxbid = int(max_result)
 
 
-    # if Max is None:
-    #     maxbid = 0
-    # else:
-    #     maxbid = int(cur.fetchone()[0])
-
-    #get the result as an integer
-
-    #maxbid = int(cur.fetchone()[0])
-
-
     query = "SELECT Listing_name, Listing_text, Listing_id, Image, Listing_price_res FROM Listings WHERE listing_id = ?"
     cur = con.cursor()
     cur.execute(query, (listing_id,))
     results = cur.fetchall()
 
-    query2 = "SELECT price, time, fk_user_id FROM Bidhistory WHERE fk_listing_id = ? ORDER BY time DESC"
+    query2 = "SELECT price, time, First_name FROM Bidhistory INNER JOIN PEOPLE ON Bidhistory.fk_user_id = PEOPLE.Person_ID WHERE fk_listing_id = ? ORDER BY time DESC"
     cur = con.cursor()
     cur.execute(query2, (listing_id,))
     results2 = cur.fetchall()
@@ -140,14 +145,17 @@ def listing_details(listing_id):
         #fname = request.form.get('user_F_name')
         userbid = request.form.get('UserBid')
         if userbid is None or userbid.strip() == '':
-            return render_template('listingpage.html', lisiting=results, listings=results, Info=results2,logged_in=is_logged_in())
+            return redirect("/listings?error=No+bids")
         else:
             Bid:int = int(userbid)
+        if len(userbid.strip()) > 18:
+            return redirect("/listings?error=Number+to+big")
+
         if Bid <= maxbid:
+            error = 'lowerbid'
             #adds the listing id so i can reload the same product page when the user fails to add a bid higher than the current bid
             listing = listing_id
-
-            return render_template('listingpage.html', lisiting = results, listings=results, Info=results2, logged_in=is_logged_in())
+            return render_template('listingpage.html', lisiting = results, listings=results, Info=results2, logged_in=is_logged_in(), error = 'lowerbid')
         user_id = session['user_id']
         query_insert = ("INSERT INTO Bidhistory (price, time ,fk_Listing_id,fk_user_id) VALUES (?, datetime('now', 'localtime'),?,?)")
 
@@ -156,13 +164,19 @@ def listing_details(listing_id):
         cur = con.cursor()
         cur.execute(query_insert, (Bid,listing_id,user_id,))
         cur.execute(query_test)
-        test_store = cur.fetchall()
         print(test_store)
         con.commit()
 
+        #Code to check if bid is reaching the reserve price of the listing and sets it to sold if it is.
+        cur.execute("SELECT Listing_price_res FROM Listings WHERE Listing_id = ?", (listing_id,))
+        ListRes = cur.fetchone()[0]
+        if Bid >= ListRes:
+            print("YAYY!")
+            cur.execute("UPDATE Listings SET Sold = 1 WHERE Listing_id = ?", (listing_id,))
+            con.commit()
+            return render_template('Bought.html', logged_in=is_logged_in())
 
-
-        return render_template('listingpage.html', lisiting = results, listings=results, Info=results2, logged_in=is_logged_in())
+        return render_listings()
     return render_template('listingpage.html', listings=results, Info=results2, logged_in=is_logged_in())
 
 
@@ -173,7 +187,7 @@ def render_listings():
     :return: calls the render template function with a page with all rows of data with specific information.
     """
     con = connect_database(DATABASE)
-    query = "SELECT Listing_name, Listing_text, Listing_id, Image FROM Listings"
+    query = "SELECT Listing_name, Listing_text, Listing_id, Image FROM Listings WHERE SOLD = 0"
     cur = con.cursor()
     cur.execute(query)
     results = cur.fetchall()
@@ -183,25 +197,40 @@ def render_listings():
 
 @app.route('/profile')
 def render_profile():
+    user_id = session['user_id']
     """
-    displays the user's information and the history of the user's bids and the history of their listings.
+    displays the user's information and the history of the user's bids and the istings they made and its status.
     :return:renders the profile html while passing in all the information that goes into the tables
     """
+    #gets the name of the user to display
     con = connect_database(DATABASE)
-    query2 = "SELECT First_name, Last_name FROM people WHERE "
     cur = con.cursor()
-    cur.execute(query1)
+
+    query = "SELECT First_name, Last_name FROM people WHERE Person_ID = ?"
+    cur.execute(query, (user_id,))
     Userdetail = cur.fetchall()
 
-    cur.execute(query2)
-    bidhistorydetail = cur.fetchall()
+    # Gets bid history of the bids the user has made
+    query2 = "SELECT price, Listing_name, time FROM Bidhistory INNER JOIN Listings ON Bidhistory.fk_Listing_id = Listings.Listing_id WHERE Bidhistory.fk_user_id = ?"
+    cur.execute(query2, (user_id,))
+    BidData = cur.fetchall()
+    print(user_id)
+    print(BidData)
 
-    cur.execute(query3)
-    ListingHistorydetail = cur.fetchall()
+    #Gets all the data of listings the user made and its status plus the highest bid ammount on the lising.
+    query2 = "SELECT Listings.Listing_name, Listings.Listing_price_res, Listings.Sold, MAX(Bidhistory.price)"\
+             " AS Highest_Bid FROM Listings LEFT JOIN Bidhistory ON Listings.Listing_id = Bidhistory.fk_Listing_id WHERE Listings.MadeBy_User_id = ? GROUP BY Listings.Listing_id"
+
+    cur.execute(query2, (user_id,))
+    Listingdata = cur.fetchall()
+    print(user_id)
+    print(Listingdata)
+
+
 
 
     con.close()
-    return render_template("profile.html", logged_in=is_logged_in())
+    return render_template("profile.html", logged_in=is_logged_in(),BidData=BidData, ListingData = Listingdata, Userdetail=Userdetail)
 
 
 @app.route('/signup', methods=['POST', 'GET'])
@@ -214,24 +243,42 @@ def render_signup():
     if request.method == 'POST':
 
         try:
+            #puts data into the variables
             fname = request.form.get('user_F_name')
             lname = request.form.get('user_L_name')
-            email = request.form.get('user_email')
+            email = request.form.get('user_email').lower()
             pass1 = request.form.get('user_password')
             pass2 = request.form.get('user_password2')
             print("flag1")
             print(fname)
+            #checks if the pass is the same
             if pass1 != pass2:
                 return redirect("/signup?error=passwords+do+not+match")
+            #checks length
             if len(pass1) < 8:
                 return redirect("/signup?error=password+must+be+more+than+8+letters")
 
+            #hashes the password for security
+            hashedPass = bcrypt.generate_password_hash(pass1)
+
             con = connect_database(DATABASE)
+            cur = con.cursor()
+
+
+            #checks if the email is already in use. this is so that a person can't make multiple accounts with one email
+            cur.execute("SELECT COUNT(*) FROM People WHERE email = ?", (email,))
+            email_exists = cur.fetchone()[0]
+            print(email_exists)
+
+            if email_exists >0:
+                error='alreadyexist'
+                print(email_exists)
+                return render_template('signup.html', error='alreadyexist')
             query_insert = ("INSERT INTO People (First_name, Last_name, Email, password) "
                             "VALUES (?, ?, ?, ?)")
             query_test = "SELECT * FROM People"
-            cur = con.cursor()
-            cur.execute(query_insert, (fname, lname, email, pass1))
+
+            cur.execute(query_insert, (fname, lname, email, hashedPass))
             cur.execute(query_test)
             test_store = cur.fetchall()
             print(test_store)
@@ -265,8 +312,10 @@ def render_login():
         query = "SELECT First_name, Last_name, Email, password, Person_ID FROM People WHERE email = ?"
         cur.execute(query, (email,))
         results = cur.fetchone()
+
         if results is not None:
-            if password != results[3]:
+            if not bcrypt.check_password_hash(results[3],password):
+                print("hash prob")
                 return render_template('login.html', error='incorrect details')
             session['email'] = results[2]
             session['first_name'] = results[0]

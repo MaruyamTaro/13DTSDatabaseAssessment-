@@ -2,7 +2,14 @@
 
 {% block pageheading %}Make A listing{% endblock %}
 
+
 {% block main %}
+    {% if error == 'emptyBox'%}
+        <h3>All boxes are required to be filled</h3>
+    {% endif %}
+    {% if error == 'lower0'%}
+        <h3>The reserve price cannot be lower than 0</h3>
+    {% endif %}
     <!---#post to add info to the dB. need enctype for file upload--->
     <form class = "myform" method="post" enctype="multipart/form-data">
         <div class = "form-group">

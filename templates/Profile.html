@@ -1,21 +1,59 @@
 {% extends "base.html" %}
 
 {% block main %}
-      {% block pageheading %}Profile{% endblock %}
-
-        <h2>You Bid On</h2>
+    {% for o in Userdetail %}
+    <h2>User First Name:{{ o[0] }}</h2>
+    <h2>User Last Name:{{ o[1] }}</h2>
+    {% endfor %}
+       <h2 style="text-align: left;">Your Bids</h2>
         <table>
             <tr>
-                <th>Bid Amount</th>
-                <th>Time</th>
+                <th>Bids </th>
                 <th>Listing Name</th>
+                <th>Time Bid</th>
             </tr>
 
-            {% for UserBIDS in Userbidinfo %}
+            {% for i in BidData %}
             <tr>
-                <td>{{ UserBIDS[0] }}</td>
-                <td>{{ UserBIDS[1] }}</td>
-                <td>{{ UserBIDS[2] }}</td>
+                <td>{{ i[0] }}</td>
+                <td>{{ i[1] }}</td>
+                <td>{{ i[2] }}</td>
             </tr>
+        {% endfor %}
         </table>
+        <h2 style="text-align: left;">Your Listings</h2>
+        <table>
+                <tr>
+                    <th>Listing Name </th>
+                    <th>Listing reserve price</th>
+                    <th>Sold</th>
+                    <th>Highest Bid</th>
+
+                </tr>
+
+                {% for i in ListingData %}
+                <tr>
+                    <td>{{ i[0] }}</td>
+                    <td>{{ i[1] }}</td>
+                    <td>
+                    <!---checks if the sold value that is passed through is a 0 or 1 and displays true or false depending on that--->
+                    <!---there was no booleans in sqlite types--->
+                        {% if i[2] == 0 %}
+                            False
+                        {% elif i[2] == 1 %}
+                            True
+                        {% endif %}
+                    </td>
+                    <td>
+                    <!---checks if the value that is passed through is none so it can display there are no bids when there are none--->
+
+                        {% if i[3] == none %}
+                            no bids yet
+                        {% else%}
+                            {{i[3]}}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </table>
 {% endblock %}

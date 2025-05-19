@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 
 {% block main %}
+    {% if error == 'lowerbid'%}
+        <h3>Bid lower than bids before</h3>
+    {% endif %}
         {% for product in listings %}
             <listingheading>{{ product[0] }}</listingheading>
             <p></p>
@@ -29,7 +32,7 @@
             <tr>
                 <th>Bid Amount</th>
                 <th>Time</th>
-                <th>User_ID</th>
+                <th>User First Name</th>
             </tr>
 
             {% for bid_info in Info %}
