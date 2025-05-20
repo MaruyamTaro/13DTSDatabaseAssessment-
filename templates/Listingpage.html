@@ -39,7 +39,13 @@
             <tr>
                 <td>{{ bid_info[0] }}</td>
                 <td>{{ bid_info[1] }}</td>
-                <td>{{ bid_info[2] }}</td>
+                <td>
+                    {% if bid_info[2] == None %}
+                        User Deleted
+                    {% else %}
+                        {{ bid_info[2] }}
+                    {% endif %}
+                </td>
             </tr>
             {% endfor %}
         </table>

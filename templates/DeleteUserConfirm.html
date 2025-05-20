@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block pageheading %}Delete User Confirm{% endblock %}
+
+{% block main %}
+    <form class = "myform" method="post" action="/deleteconfirm">
+        <div class = "form-group">
+            <div class = "form-label" > Press submit to delete. Return Home if you do not want to </div>
+             <input type="hidden" name="user_id" value="{{ DeleteUser }}">
+            <div class = "form-element"> <input type = "submit" name = "Delete"> </div>
+        </div>
+    </form>
+
+{% endblock %}

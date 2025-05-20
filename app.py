@@ -17,14 +17,28 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def is_logged_in():
     """
     params: none
-    :return: true if the user is logged in. False if the user has not logged in
+    :return: true if the user is logged in. False if the user has not logged in.
     """
     if session.get('first_name') is None:
         return False
     else:
         print("Logged IN")
         return True
+def admin_check():
+    """
+    Checks if the user is a admin by seeing if the user id is one.
+    params: none
 
+    :return:  True if the user is a admin and false if its a normal account
+
+    """
+    print("checking admin")
+    if session.get('user_id') ==1:
+        print("Admin logged in")
+        return True
+    else:
+        print("not admin")
+        return False
 
 def connect_database(db_file):
     """
@@ -54,7 +68,7 @@ def render_homepage():
     After the user logs in it adds the changes to the home.html to get rid of some of the headings.
     :return: call to the render template function home.html and passes in the logged in status.
     """
-    return render_template('home.html', logged_in=is_logged_in())
+    return render_template('home.html', logged_in=is_logged_in(),admin_check=admin_check())
 
 
 @app.route('/MakeListing', methods=['POST', 'GET'])
@@ -67,11 +81,11 @@ def render_Makelisting():
         # checks if any of the values of these variables are empty but if they are not they return template to display error.
         if not all([listing_name, listing_info, list_price_res]):
             print("EMPTYBOXES")
-            return render_template('makelisting.html', error="emptyBox", logged_in=is_logged_in())
+            return render_template('makelisting.html', error="emptyBox", logged_in=is_logged_in(),admin_check=admin_check())
         #checks if the reserve price is lower than 0. stops the code from causing a error later on when bidding
         if list_price_res <=0:
             print("initial lower than 0")
-            return render_template('makelisting.html', error="lower0", logged_in=is_logged_in())
+            return render_template('makelisting.html', error="lower0", logged_in=is_logged_in(),admin_check=admin_check())
 
         if 'listing_image' in request.files:
 
@@ -96,9 +110,9 @@ def render_Makelisting():
             print(test_store)
             con.commit()
 
-            return render_template('listings.html', logged_in=is_logged_in())
+            return render_template('listings.html', logged_in=is_logged_in(),admin_check=admin_check())
 
-    return render_template('makelisting.html',logged_in=is_logged_in())
+    return render_template('makelisting.html',logged_in=is_logged_in(),admin_check=admin_check())
 
 
 @app.route('/listings/<int:listing_id>', methods=['POST', 'GET'])
@@ -132,7 +146,8 @@ def listing_details(listing_id):
     cur.execute(query, (listing_id,))
     results = cur.fetchall()
 
-    query2 = "SELECT price, time, First_name FROM Bidhistory INNER JOIN PEOPLE ON Bidhistory.fk_user_id = PEOPLE.Person_ID WHERE fk_listing_id = ? ORDER BY time DESC"
+    query2 = "SELECT price, time, COALESCE(First_name, 'User Deleted') FROM Bidhistory LEFT JOIN PEOPLE ON Bidhistory.fk_user_id = PEOPLE.Person_ID WHERE fk_listing_id = ? ORDER BY time DESC"
+    print(query2)
     cur = con.cursor()
     cur.execute(query2, (listing_id,))
     results2 = cur.fetchall()
@@ -155,7 +170,7 @@ def listing_details(listing_id):
             error = 'lowerbid'
             #adds the listing id so i can reload the same product page when the user fails to add a bid higher than the current bid
             listing = listing_id
-            return render_template('listingpage.html', lisiting = results, listings=results, Info=results2, logged_in=is_logged_in(), error = 'lowerbid')
+            return render_template('listingpage.html', lisiting = results, listings=results, Info=results2, logged_in=is_logged_in(), error = 'lowerbid',admin_check=admin_check())
         user_id = session['user_id']
         query_insert = ("INSERT INTO Bidhistory (price, time ,fk_Listing_id,fk_user_id) VALUES (?, datetime('now', 'localtime'),?,?)")
 
@@ -174,10 +189,10 @@ def listing_details(listing_id):
             print("YAYY!")
             cur.execute("UPDATE Listings SET Sold = 1 WHERE Listing_id = ?", (listing_id,))
             con.commit()
-            return render_template('Bought.html', logged_in=is_logged_in())
+            return render_template('Bought.html', logged_in=is_logged_in(),admin_check=admin_check())
 
         return render_listings()
-    return render_template('listingpage.html', listings=results, Info=results2, logged_in=is_logged_in())
+    return render_template('listingpage.html', listings=results, Info=results2, logged_in=is_logged_in(),admin_check=admin_check())
 
 
 @app.route('/listings')
@@ -193,7 +208,7 @@ def render_listings():
     results = cur.fetchall()
     print(results)
     con.close()
-    return render_template('listings.html', listings=results, logged_in=is_logged_in())
+    return render_template('listings.html', listings=results, logged_in=is_logged_in(),admin_check=admin_check())
 
 @app.route('/profile')
 def render_profile():
@@ -230,7 +245,7 @@ def render_profile():
 
 
     con.close()
-    return render_template("profile.html", logged_in=is_logged_in(),BidData=BidData, ListingData = Listingdata, Userdetail=Userdetail)
+    return render_template("profile.html", logged_in=is_logged_in(),BidData=BidData, ListingData = Listingdata, Userdetail=Userdetail,admin_check=admin_check())
 
 
 @app.route('/signup', methods=['POST', 'GET'])
@@ -273,7 +288,7 @@ def render_signup():
             if email_exists >0:
                 error='alreadyexist'
                 print(email_exists)
-                return render_template('signup.html', error='alreadyexist')
+                return render_template('signup.html', error='alreadyexist',logged_in=is_logged_in(),admin_check=admin_check())
             query_insert = ("INSERT INTO People (First_name, Last_name, Email, password) "
                             "VALUES (?, ?, ?, ?)")
             query_test = "SELECT * FROM People"
@@ -316,7 +331,7 @@ def render_login():
         if results is not None:
             if not bcrypt.check_password_hash(results[3],password):
                 print("hash prob")
-                return render_template('login.html', error='incorrect details')
+                return render_template('login.html', error='incorrect details',logged_in=is_logged_in(),admin_check=admin_check())
             session['email'] = results[2]
             session['first_name'] = results[0]
             session['last_name'] = results[1]
@@ -326,7 +341,7 @@ def render_login():
             return redirect("/")
         else:
             return render_template('login.html', error='incorrect details')
-    return render_template('login.html', logged_in=is_logged_in())
+    return render_template('login.html', logged_in=is_logged_in(),admin_check=admin_check())
 
 
 @app.route('/logout', methods=['POST', 'GET'])
@@ -338,6 +353,65 @@ def logout():
     print(session)
     session.clear()
     print(session)
+    return redirect('/')
+
+@app.route('/admin', methods=['POST', 'GET'])
+def admin():
+    if not admin_check():
+        return redirect('/')
+    """
+    admin page where you can delete users
+    :return: passes in data of users but also gets data of which user is going to be deleted
+    """
+    con = connect_database(DATABASE)
+    cur = con.cursor()
+    query = "SELECT First_name, Last_name, Person_ID FROM People"
+    cur.execute(query)
+    Userlist = cur.fetchall()
+
+    print(Userlist)
+    con.commit()
+
+    #Userlist list needed for the users delete
+    return render_template('Admin.html', Userlist=Userlist ,logged_in=is_logged_in(), admin_check=admin_check())
+@app.route('/delete_user', methods=['POST', 'GET'])
+def delete_user():
+    if not admin_check():
+        return redirect('/')
+    """
+    admin page where you can delete users
+    :return: passes in data of users but also gets data of which user is going to be deleted
+    """
+    if request.method =='POST':
+        User = request.form.get('select_user')
+        print(User)
+    return render_template('DeleteUserConfirm.html', DeleteUser=User ,logged_in=is_logged_in(), admin_check=admin_check())
+
+@app.route('/deleteconfirm', methods=['POST'])
+def confirm_delete_user():
+    """
+    THis is called when the admin selected a user to delete and confirmed that they wanted to delete
+    :return: the query is excecuted and the user with the user id is deleted
+    """
+    if not admin_check():
+        return redirect('/')
+    if request.method == 'POST':
+        user_id = request.form.get('user_id')
+        if user_id:
+            try:
+                con = connect_database(DATABASE)
+                cur = con.cursor()
+
+                # First check if this isn't the admin user (user_id 1)
+                if int(user_id) == 1:
+                    return redirect('/admin?error=Cannot+delete+admin+user')
+
+                cur.execute("DELETE FROM People WHERE Person_ID = ?", (user_id,))
+                con.commit()
+                redirect('/')
+
+            except Exception as e:
+                print(f"Error deleting user: {str(e)}")
     return redirect('/')
 
 
