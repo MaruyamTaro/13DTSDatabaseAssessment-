@@ -15,7 +15,7 @@
 
             {% for i in BidData %}
             <tr>
-                <td>{{ i[0] }}</td>
+                <td>${{ i[0] }}</td>
                 <td>{{ i[1] }}</td>
                 <td>{{ i[2] }}</td>
             </tr>
@@ -34,7 +34,7 @@
                 {% for i in ListingData %}
                 <tr>
                     <td>{{ i[0] }}</td>
-                    <td>{{ i[1] }}</td>
+                    <td>${{ i[1] }}</td>
                     <td>
                     <!---checks if the sold value that is passed through is a 0 or 1 and displays true or false depending on that--->
                     <!---there was no booleans in sqlite types--->
@@ -50,7 +50,7 @@
                         {% if i[3] == none %}
                             no bids yet
                         {% else%}
-                            {{i[3]}}
+                            ${{i[3]}}
                         {% endif %}
                     </td>
                 </tr>

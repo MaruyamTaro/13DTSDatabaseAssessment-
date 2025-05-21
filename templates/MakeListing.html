@@ -7,6 +7,11 @@
     {% if error == 'emptyBox'%}
         <h3>All boxes are required to be filled</h3>
     {% endif %}
+
+    {% if error == 'invalidfile'%}
+        <h3>File needs to be a image or filled</h3>
+    {% endif %}
+
     {% if error == 'lower0'%}
         <h3>The reserve price cannot be lower than 0</h3>
     {% endif %}

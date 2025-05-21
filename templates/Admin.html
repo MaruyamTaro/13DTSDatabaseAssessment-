@@ -3,11 +3,13 @@
 {% block pageheading %}ADMIN{% endblock %}
 
 {% block main %}
+
     <form class = "myform" method="post" action="delete_user">
         <div class="form-group">
             <div class ="form-label" for="user_email">User Names: </div>
             <div class ="form-element">
                 <select id = "select_user"  name ="select_user">
+                <!---displays all the users in a drop down menu --->
                     {% for users in Userlist %}
                         <option value = "{{ users[2] }}">Name:({{users[0] }} {{ users[1] }})   User ID:{{  users[2] }}</option>
                     {% endfor %}

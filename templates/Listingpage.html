@@ -1,9 +1,7 @@
 {% extends "base.html" %}
 
 {% block main %}
-    {% if error == 'lowerbid'%}
-        <h3>Bid lower than bids before</h3>
-    {% endif %}
+
         {% for product in listings %}
             <listingheading>{{ product[0] }}</listingheading>
             <p></p>
@@ -27,6 +25,10 @@
             <h1>Sign In to Bid</h1>
         {% endif %}
 
+    {% if error == 'lowerbid'%}
+        <h3>Bid lower than bids before</h3>
+    {% endif %}
+
         <h2>History</h2>
         <table>
             <tr>
@@ -40,6 +42,7 @@
                 <td>{{ bid_info[0] }}</td>
                 <td>{{ bid_info[1] }}</td>
                 <td>
+                <!---displays text that explain why there is no value  --->
                     {% if bid_info[2] == None %}
                         User Deleted
                     {% else %}

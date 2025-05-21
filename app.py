@@ -14,6 +14,7 @@ app.secret_key = "abcdef"
 UPLOAD_FOLDER = 'static/images'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+
 def is_logged_in():
     """
     params: none
@@ -24,6 +25,7 @@ def is_logged_in():
     else:
         print("Logged IN")
         return True
+
 def admin_check():
     """
     Checks if the user is a admin by seeing if the user id is one.
@@ -33,12 +35,13 @@ def admin_check():
 
     """
     print("checking admin")
-    if session.get('user_id') ==1:
+    if session.get('user_id') == 1:
         print("Admin logged in")
         return True
     else:
         print("not admin")
         return False
+
 
 def connect_database(db_file):
     """
@@ -73,16 +76,26 @@ def render_homepage():
 
 @app.route('/MakeListing', methods=['POST', 'GET'])
 def render_Makelisting():
+    """
+    infomation about the listing that the user wants to make is passed in and get checked if it contains
+    valid information and if it is, it gets added to the database. (table=Listings)
+    :return: Returns either the same page if there is an error with the html dysplaying it or listings page where the user
+    can see the listing they just made.
+    """
     if request.method == 'POST':
         listing_name = request.form.get('Listing_name')
         listing_info = request.form.get('Listing_info')
-        list_price_res = int(request.form.get('List_price_res'))
+        list_price_res = request.form.get('List_price_res')
         Image = request.form.get('listing_image')
         # checks if any of the values of these variables are empty but if they are not they return template to display error.
         if not all([listing_name, listing_info, list_price_res]):
             print("EMPTYBOXES")
             return render_template('makelisting.html', error="emptyBox", logged_in=is_logged_in(),admin_check=admin_check())
+
+
+
         #checks if the reserve price is lower than 0. stops the code from causing a error later on when bidding
+        list_price_res=int(list_price_res)
         if list_price_res <=0:
             print("initial lower than 0")
             return render_template('makelisting.html', error="lower0", logged_in=is_logged_in(),admin_check=admin_check())
@@ -90,6 +103,10 @@ def render_Makelisting():
         if 'listing_image' in request.files:
 
             file = request.files['listing_image']
+            # checks if the file is a image file
+            if file.filename == '' or not file.filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
+                return render_template('makelisting.html', error="invalidfile", logged_in=is_logged_in(),
+                                       admin_check=admin_check())
 
             filename = file.filename
 
@@ -122,10 +139,12 @@ def listing_details(listing_id):
 
     """
     when the user clicks on a listing in the listings page, it sends the user to a page specifically to the product
-     where they can bid
-    :param listing_id:
+     where they can bid. When they bid, they add their information and how much they bid into the database. where it will be displayed in the 
+     same page.
+    :param listing_id, :
     :return: calls the render template function with the data from the database filtered with the lisiting ID. so it
     displays only the specific product.
+    
     """
     con = connect_database(DATABASE)
     cur = con.cursor()
@@ -179,7 +198,7 @@ def listing_details(listing_id):
         cur = con.cursor()
         cur.execute(query_insert, (Bid,listing_id,user_id,))
         cur.execute(query_test)
-        print(test_store)
+
         con.commit()
 
         #Code to check if bid is reaching the reserve price of the listing and sets it to sold if it is.
@@ -209,6 +228,7 @@ def render_listings():
     print(results)
     con.close()
     return render_template('listings.html', listings=results, logged_in=is_logged_in(),admin_check=admin_check())
+
 
 @app.route('/profile')
 def render_profile():
@@ -251,9 +271,10 @@ def render_profile():
 @app.route('/signup', methods=['POST', 'GET'])
 def render_signup():
     """
-    sign up gets the input from the user and puts it into the database people with the insert
+    sign up gets the input from the user and puts it into the database people with the insert query
     :return:
-    database with new user info
+    database with new user info. if there are errors with the values the user inputted it will show the errors instead
+    of showing the login page when the sign up is successfull.
     """
     if request.method == 'POST':
 
@@ -314,7 +335,8 @@ def render_login():
     """
     Displays the html with the login area. The user inserts the data and checks if the data they inserted
     is the same as the ones in the database. if not it displays a error.
-    :return:calls the render template function for the home.html if the details are correct. If not it renders the login with a error.
+    :return:calls the render template function for the home.html if the details are correct. If not it renders the login with a error.This error
+    is displayed on html.
     """
     if is_logged_in():
         return redirect('/')
@@ -347,7 +369,7 @@ def render_login():
 @app.route('/logout', methods=['POST', 'GET'])
 def logout():
     """
-    logs out the user
+    logs out the user. clears the session
     :return:clears the session of the info of the user.
     """
     print(session)
@@ -360,8 +382,9 @@ def admin():
     if not admin_check():
         return redirect('/')
     """
-    admin page where you can delete users
-    :return: passes in data of users but also gets data of which user is going to be deleted
+    admin page where you can delete users. only accessible when the user passes in the admincheck function adn returns True
+    
+    :return: passes in data of all the users where the admin can select in the admin page html. 
     """
     con = connect_database(DATABASE)
     cur = con.cursor()
@@ -379,8 +402,10 @@ def delete_user():
     if not admin_check():
         return redirect('/')
     """
-    admin page where you can delete users
-    :return: passes in data of users but also gets data of which user is going to be deleted
+    the page after the admin selects a user in the admin page. Asks if they really want to delete the user
+    for a final confirmation
+    :return: the html with the submit button that deletes the user. if the user presses the button it 
+    calls the function to acutally excecute the query that has the delete code. 
     """
     if request.method =='POST':
         User = request.form.get('select_user')
