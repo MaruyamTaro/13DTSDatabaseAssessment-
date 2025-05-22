@@ -20,14 +20,14 @@
             <div class = "form-label"> Submit </div>
             <div class = "form-element"> <input type = "submit" name = "Bid!"> </div>
         </div>
+            {% if error == 'lowerbid'%}
+        <h3>Bid lower than bids before</h3>
+    {% endif %}
     </form>
         {% else %}
             <h1>Sign In to Bid</h1>
         {% endif %}
 
-    {% if error == 'lowerbid'%}
-        <h3>Bid lower than bids before</h3>
-    {% endif %}
 
         <h2>History</h2>
         <table>

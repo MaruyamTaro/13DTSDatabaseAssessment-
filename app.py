@@ -206,6 +206,7 @@ def listing_details(listing_id):
         ListRes = cur.fetchone()[0]
         if Bid >= ListRes:
             print("YAYY!")
+            #if the listing is sold updates the database to hide the listing in listings page
             cur.execute("UPDATE Listings SET Sold = 1 WHERE Listing_id = ?", (listing_id,))
             con.commit()
             return render_template('Bought.html', logged_in=is_logged_in(),admin_check=admin_check())
@@ -294,6 +295,10 @@ def render_signup():
             if len(pass1) < 8:
                 return redirect("/signup?error=password+must+be+more+than+8+letters")
 
+            if not all([fname, lname, email]):
+                print("EMPTYBOXES")
+                return redirect("/signup?error=Empty+boxes+Signup+failed")
+
             #hashes the password for security
             hashedPass = bcrypt.generate_password_hash(pass1)
 
@@ -361,6 +366,7 @@ def render_login():
             session['user_id'] = results[4]
             session['ADMIN'] = results[5]
             print(session)
+
             return redirect("/")
         else:
             return render_template('login.html', error='incorrect details')
@@ -429,7 +435,7 @@ def confirm_delete_user():
                 cur = con.cursor()
 
                 # First check if this isn't the admin user (user_id 1)
-                if int(user_id) == 1:
+                if session.get('ADMIN') == 1:
                     return redirect('/admin?error=Cannot+delete+admin+user')
 
                 cur.execute("DELETE FROM People WHERE Person_ID = ?", (user_id,))
