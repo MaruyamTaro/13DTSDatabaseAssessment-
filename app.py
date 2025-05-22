@@ -429,13 +429,18 @@ def confirm_delete_user():
         return redirect('/')
     if request.method == 'POST':
         user_id = request.form.get('user_id')
+
         if user_id:
             try:
                 con = connect_database(DATABASE)
                 cur = con.cursor()
+                cur.execute("SELECT ADMIN FROM People WHERE Person_ID = ?", (user_id,))
+                admin_result = cur.fetchone()
+                admin = admin_result[0] if admin_result else 0
 
+                print(admin_result)
                 # First check if this isn't the admin user (user_id 1)
-                if session.get('ADMIN') == 1:
+                if admin == 1:
                     return redirect('/admin?error=Cannot+delete+admin+user')
 
                 cur.execute("DELETE FROM People WHERE Person_ID = ?", (user_id,))
