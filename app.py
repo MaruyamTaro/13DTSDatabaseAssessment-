@@ -28,14 +28,14 @@ def is_logged_in():
 
 def admin_check():
     """
-    Checks if the user is a admin by seeing if the user id is one.
+    Checks if the user is a admin by seeing if the ADMIN column has a 1 or 0.
     params: none
 
     :return:  True if the user is a admin and false if its a normal account
 
     """
     print("checking admin")
-    if session.get('user_id') == 1:
+    if session.get('ADMIN') == 1:
         print("Admin logged in")
         return True
     else:
@@ -280,8 +280,8 @@ def render_signup():
 
         try:
             #puts data into the variables
-            fname = request.form.get('user_F_name')
-            lname = request.form.get('user_L_name')
+            fname = request.form.get('user_F_name').title()
+            lname = request.form.get('user_L_name').title()
             email = request.form.get('user_email').lower()
             pass1 = request.form.get('user_password')
             pass2 = request.form.get('user_password2')
@@ -341,12 +341,13 @@ def render_login():
     if is_logged_in():
         return redirect('/')
     if request.method == 'POST':
-        email = request.form.get('user_email')
+        email = request.form.get('user_email').lower()
         password = request.form.get('user_password')
+        print(email)
 
         con = connect_database(DATABASE)
         cur = con.cursor()
-        query = "SELECT First_name, Last_name, Email, password, Person_ID FROM People WHERE email = ?"
+        query = "SELECT First_name, Last_name, Email, password, Person_ID, ADMIN FROM People WHERE email = ?"
         cur.execute(query, (email,))
         results = cur.fetchone()
 
@@ -358,7 +359,7 @@ def render_login():
             session['first_name'] = results[0]
             session['last_name'] = results[1]
             session['user_id'] = results[4]
-
+            session['ADMIN'] = results[5]
             print(session)
             return redirect("/")
         else:
